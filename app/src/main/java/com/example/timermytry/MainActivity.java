@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView time;
     private int seconds;
     private boolean running;
+    private boolean wasRunning;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +25,36 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState!=null){
             seconds = savedInstanceState.getInt("seconds");
             running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
         }
         startWatch();
+    }
+    @Override
+    protected void onStop(){
+        super.onStop();
+        wasRunning=running;
+        running = false;
+
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if(wasRunning){
+            running = true;
+        }
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        wasRunning=running;
+        running = false;
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(wasRunning){
+            running = true;
+        }
     }
     public void startWatch(View view){
         running = true;
@@ -42,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("seconds",seconds);
         savedInstanceState.putBoolean("running",running);
+        savedInstanceState.putBoolean("wasRunning",wasRunning);
     }
 
     protected void startWatch(){
